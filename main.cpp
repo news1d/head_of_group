@@ -32,6 +32,14 @@ void conductElection(vector<Candidate>& candidates) {
 
     // Цикл голосования
     while (true) {
+        string studentName;
+        cout << "Введите ваше имя (0 - закончить голосование): ";
+        cin >> studentName;
+
+        if (studentName == "0") {
+            break;
+        }
+
         cout << "Введите номер кандидата, за которого хотите проголосовать (0 - закончить голосование): ";
         int choice;
         cin >> choice;
