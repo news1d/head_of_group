@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>  // Добавлено для использования std::map
 
 using namespace std;
 
@@ -25,6 +26,9 @@ void conductElection(vector<Candidate>& candidates) {
     for (int i = 0; i < candidates.size(); i++) {
         cout << i + 1 << ". " << candidates[i].name << endl;
     }
+
+    // Создаем map для хранения истории голосования (студент -> выбранный кандидат)
+    map<string, string> votingHistory;
 
     // Цикл голосования
     while (true) {
