@@ -69,6 +69,12 @@ void conductElection(vector<Candidate>& candidates) {
     for (int i = 0; i < candidates.size(); i++) {
         cout << i + 1 << ". " << candidates[i].name << ": " << candidates[i].votes << " голосов" << endl;
     }
+
+    // Вывод истории голосования
+    cout << "\nИстория голосования:" << endl;
+    for (const auto& entry : votingHistory) {
+        cout << "Студент: " << entry.first << ", Голосовал за: " << entry.second << endl;
+    }
 }
 
 int main() {
