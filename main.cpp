@@ -54,6 +54,9 @@ void conductElection(vector<Candidate>& candidates) {
 
         // Увеличение количества голосов кандидата
         candidates[choice - 1].votes++;
+
+        // Сохраняем голосование в истории
+        votingHistory[studentName] = candidates[choice - 1].name;
     }
 
     // Сортировка кандидатов по убыванию голосов
