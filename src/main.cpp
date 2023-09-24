@@ -17,6 +17,18 @@ struct Candidate {
     }
 };
 
+// Функция для сортировки кандидатов по убыванию голосов
+void sortCandidatesByVotes(vector<Candidate>& candidates){
+    sort(candidates.begin(), candidates.end(), [](const Candidate& a, const Candidate& b) {
+        return a.votes > b.votes;
+    });
+}
+
+// Функция для голосования за кандидата
+void voteForCandidate(vector<Candidate>& candidates, int choice) {
+    candidates[choice - 1].votes++;
+}
+
 // Функция для проведения голосования
 void conductElection(vector<Candidate>& candidates) {
     cout << "Голосование за выбор старосты!" << endl;
@@ -53,16 +65,14 @@ void conductElection(vector<Candidate>& candidates) {
         }
 
         // Увеличение количества голосов кандидата
-        candidates[choice - 1].votes++;
+        voteForCandidate(candidates, choice);
 
         // Сохраняем голосование в истории
         votingHistory[studentName] = candidates[choice - 1].name;
     }
 
     // Сортировка кандидатов по убыванию голосов
-    sort(candidates.begin(), candidates.end(), [](const Candidate& a, const Candidate& b) {
-        return a.votes > b.votes;
-    });
+    sortCandidatesByVotes(candidates);
 
     // Вывод результатов голосования
     cout << "Результаты голосования:" << endl;
