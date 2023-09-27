@@ -4,81 +4,67 @@
 
 using namespace std;
 
-// Функция для имитации пользовательского ввода
-std::istringstream simulateUserInput(const std::string& input) {
-    return std::istringstream(input);
-}
 
-// Тест для проверки создания структуры Candidate
-TEST(CandidateTest, Creation) {
-    Candidate candidate("John Doe");
-    EXPECT_EQ(candidate.name, "John Doe");
-    EXPECT_EQ(candidate.votes, 0);
+// Тест для проверки сортировки кандидатов по голосам
+TEST(ElectionTest, SortCandidatesByVotes) {
+    // Создаем вектор кандидатов
+    vector<Candidate> candidates = {Candidate("Candidate1"), Candidate("Candidate2"), Candidate("Candidate3")};
+    // Добавляем голоса кандидатам
+    candidates[0].votes = 5;
+    candidates[1].votes = 10;
+    candidates[2].votes = 7;
+
+    // Вызываем функцию сортировки кандидатов
+    sortCandidatesByVotes(candidates);
+
+    // Проверяем сортировку кандидатов
+    EXPECT_EQ(candidates[0].name, "Candidate2");
+    EXPECT_EQ(candidates[1].name, "Candidate3");
+    EXPECT_EQ(candidates[2].name, "Candidate1");
 }
 
 // Тест для проверки правильности проведения голосования
 TEST(ElectionTest, ConductElection) {
     // Создаем вектор кандидатов
-    vector<Candidate> candidates;
-    candidates.push_back(Candidate("Candidate1"));
-    candidates.push_back(Candidate("Candidate2"));
+    vector<Candidate> candidates = {Candidate("Candidate1"), Candidate("Candidate2")};
 
-    // Имитируем пользовательский ввод
+    // Имитируем пользовательский ввод (т.к. запрашивается ввод имени голосующего и его выбор)
     std::istringstream input_stream("Artur\n1\nAndrey\n2\nSergey\n1\n0\n");
-    std::cin.rdbuf(input_stream.rdbuf());  // Перенаправляем ввод
-
-    // Вызываем функцию проведения голосования
-    conductElection(candidates);
-
-    // Проверяем результаты голосования
-    EXPECT_EQ(candidates[0].votes + candidates[1].votes, 3);
-    EXPECT_GT(candidates[0].votes, 0);  // Проверяем, что хотя бы у одного кандидата есть голоса
-}
-
-// Тест для проверки сортировки кандидатов по голосам
-TEST(ElectionTest, SortCandidatesByVotes) {
-    vector<Candidate> candidates;
-    candidates.push_back(Candidate("Candidate1"));
-    candidates.push_back(Candidate("Candidate2"));
-    candidates[0].votes = 5;
-    candidates[1].votes = 10;
-
-    // Вызываем функцию сортировки кандидатов
-    sortCandidatesByVotes(candidates);
-
-    // Проверяем, что кандидаты отсортированы в правильном порядке
-    EXPECT_GT(candidates[0].votes, candidates[1].votes);  // Проверяем, что первый кандидат имеет больше голосов
-}
-
-// Тест для проверки правильности добавления голосов кандидату
-TEST(ElectionTest, VoteForCandidate) {
-    vector<Candidate> candidates;
-    candidates.push_back(Candidate("Candidate1"));
-    candidates.push_back(Candidate("Candidate2"));
-
-    // Голосуем за первого кандидата
-    voteForCandidate(candidates, 1);
-
-    // Проверяем, что голоса были правильно добавлены
-    EXPECT_EQ(candidates[0].votes, 1);
-    EXPECT_EQ(candidates[1].votes, 0);
-}
-
-// Тест для проверки сценария без кандидатов
-TEST(ElectionTest, NoCandidates) {
-    vector<Candidate> candidates;
-
-    // Имитируем пользовательский ввод
-    std::istringstream input_stream("0\n");
-    // Перенаправляем ввод
     std::cin.rdbuf(input_stream.rdbuf());
 
-    // Вызываем функцию проведения голосования
-    conductElection(candidates);
+    // Проверяем победителя голосвания
+    EXPECT_EQ("Candidate1", conductElection(candidates));
+}
 
-    // Проверяем, что функция не вызывает ошибок при отсутствии кандидатов
-    // Ожидаем, что результаты голосования будут пустыми
-    EXPECT_TRUE(candidates.empty());
+// Тест для проверки наличия кандидатов
+TEST(ElectionTest, NoCandidates) {
+    // Создаем вектор кандидатов
+    vector<Candidate> candidates;
+
+    // Проверяем, что кандидаты отсуствуют
+    EXPECT_EQ("Нет кандидатов для голосования!", conductElection(candidates));
+}
+
+// Тест для проверки наличия более одного кандидата
+TEST(ElectionTest, SingleCandidate) {
+    // Создаем вектор кандидатов
+    vector<Candidate> candidates = {Candidate("Candidate1")};
+
+    // Проверяем, что кандидатов недостаточно
+    EXPECT_EQ("Недостаточно кандидатов!", conductElection(candidates));
+}
+
+// Тест для проверки наличия голосов
+TEST(ElectionTest, NoVotes) {
+    // Создаем вектор кандидатов
+    vector<Candidate> candidates = {Candidate("Candidate1"), Candidate("Candidate2")};
+
+    // Имитируем пользовательский ввод (т.к. запрашивается ввод имени голосующего и его выбор)
+    std::istringstream input_stream("0\n");
+    std::cin.rdbuf(input_stream.rdbuf());
+
+    // Проверяем наличие голосов
+    EXPECT_EQ("Голоса отсутствуют!", conductElection(candidates));
 }
 
 int main(int argc, char **argv)
