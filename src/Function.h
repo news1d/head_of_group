@@ -17,7 +17,6 @@ struct Candidate {
     }
 };
 
-
 // Функция для сортировки кандидатов по убыванию голосов
 void sortCandidatesByVotes(vector<Candidate>& candidates){
     sort(candidates.begin(), candidates.end(), [](const Candidate& a, const Candidate& b) {
@@ -31,13 +30,22 @@ void voteForCandidate(vector<Candidate>& candidates, int choice) {
 }
 
 // Функция для проведения голосования
-void conductElection(vector<Candidate>& candidates) {
+string conductElection(vector<Candidate>& candidates) {
     cout << "Голосование за выбор старосты!" << endl;
 
     // Вывод списка кандидатов
     cout << "Кандидаты:" << endl;
     for (int i = 0; i < candidates.size(); i++) {
         cout << i + 1 << ". " << candidates[i].name << endl;
+    }
+
+    if (candidates.size() == 0) {
+        cout << "Нет кандидатов для голосования!";
+        return "Нет кандидатов для голосования!";
+    }
+    if (candidates.size() == 1) {
+        cout << "Недостаточно кандидатов!";
+        return "Недостаточно кандидатов!";
     }
 
     // Создаем map для хранения истории голосования (студент -> выбранный кандидат)
@@ -49,7 +57,11 @@ void conductElection(vector<Candidate>& candidates) {
         cout << "Введите ваше имя (0 - закончить голосование): ";
         cin >> studentName;
 
-        if (studentName == "0") {
+        if (studentName == "0" and votingHistory.empty()) {
+            cout << "Голоса отсутствуют!";
+            return "Голоса отсутствуют!";
+        }
+        else if (studentName == "0"){
             break;
         }
 
@@ -60,6 +72,10 @@ void conductElection(vector<Candidate>& candidates) {
         if (choice < 0 || choice > candidates.size()) {
             cout << "Недопустимый выбор!" << endl;
             continue;
+        }
+        else if (choice == 0 and votingHistory.empty()){
+            cout << "Голоса отсутствуют!";
+            return "Голоса отсутствуют!";
         }
         else if (choice == 0) {
             break;
@@ -86,4 +102,6 @@ void conductElection(vector<Candidate>& candidates) {
     for (const auto& entry : votingHistory) {
         cout << "Студент: " << entry.first << ", Голосовал за: " << entry.second << endl;
     }
+
+    return candidates[0].name;
 }
